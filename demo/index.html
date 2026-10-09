@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ResponseHarbor — Live Demo (English)</title>
+<style>
+:root{--bg:#0b1220;--card:#111b2e;--muted:#8fa0bb;--text:#f7f9fc;--line:#22304a;--accent:#4caaff;--blue:#4caaff;--warn:#fbbf24}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:linear-gradient(180deg,#07101d,#0b1220);color:var(--text)}
+.wrap{max-width:1100px;margin:0 auto;padding:32px 18px 64px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:24px}
+h1{font-size:30px;margin:0}.sub{color:var(--muted);margin-top:6px}.badge{padding:8px 12px;border:1px solid #2d3d5e;border-radius:999px;color:var(--accent);background:#0d1a2d}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}@media(max-width:850px){.grid{grid-template-columns:1fr}}
+.card{background:rgba(17,27,46,.96);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 16px 50px rgba(0,0,0,.22)}
+.stepper{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.step{padding:8px 11px;border-radius:10px;background:#0d1626;border:1px solid var(--line);color:var(--muted);font-size:13px}.step.active{color:#06131a;background:var(--accent);border-color:var(--accent);font-weight:700}
+.phone{max-width:390px;margin:auto;background:#05090f;border:8px solid #1e293b;border-radius:36px;padding:16px;min-height:600px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.phoneHead{display:flex;justify-content:space-between;color:#cbd5e1;font-size:12px;margin-bottom:16px}.caller{padding:18px;background:#101927;border-radius:20px;text-align:center;margin:10px 0 18px}.caller .icon{font-size:36px}.small{font-size:13px;color:var(--muted)}
+.msg{max-width:84%;padding:10px 12px;border-radius:14px;margin:10px 0;font-size:14px;line-height:1.38}.in{background:#182338}.out{background:#1355a8;margin-left:auto}.buttons{display:flex;gap:10px;margin-top:20px}.btn{border:0;border-radius:12px;padding:11px 15px;font-weight:700;cursor:pointer}.primary{background:var(--accent);color:#071728}.secondary{background:#1f2c43;color:#fff;border:1px solid #33445f}
+.metric{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line)}.metric:last-child{border:0}.value{font-weight:800;color:var(--accent)}
+.lead{background:#0c1727;border:1px solid #29405f;border-radius:14px;padding:14px;margin-top:14px}.lead b{color:#fff}.tag{display:inline-block;padding:5px 8px;background:#14243a;border-radius:999px;color:#cfe4ff;margin:4px 5px 0 0;font-size:12px}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}@media(max-width:600px){.flow{grid-template-columns:1fr}}.flow div{padding:12px;text-align:center;border:1px solid var(--line);border-radius:12px;background:#0d1626;font-size:13px}
+.note{padding:12px;border-left:3px solid var(--warn);background:#1d190b;border-radius:8px;color:#fde68a;font-size:13px;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap"><p style="font-size:13px"><a href="../" style="color:#93c5fd;text-decoration:none">← ResponseHarbor</a> &nbsp; · &nbsp; <a href="./de/" style="color:#93c5fd;text-decoration:none">Deutsch</a></p>
+  <div class="top">
+    <div><h1>ResponseHarbor — Lead Recovery Demo</h1><div class="sub">Missed call → consent → SMS qualification → booking/callback → owner alert</div></div>
+    <div class="badge">2–3 minute demo</div>
+  </div>
+
+  <div class="stepper" id="steps">
+    <div class="step active">1 Missed call</div><div class="step">2 SMS consent</div><div class="step">3 Qualification</div><div class="step">4 Callback request</div><div class="step">5 Owner alert</div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="phone">
+        <div class="phoneHead"><span>09:42</span><span>Demo HVAC</span></div>
+        <div id="phoneBody"></div>
+        <div class="buttons">
+          <button class="btn secondary" onclick="prev()">Back</button>
+          <button class="btn primary" onclick="next()">Next step</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0">What the business sees</h2>
+      <div class="metric"><span>Lead source</span><span class="value" id="source">Missed call</span></div>
+      <div class="metric"><span>Consent</span><span class="value" id="consent">Pending</span></div>
+      <div class="metric"><span>Qualification</span><span class="value" id="qual">0%</span></div>
+      <div class="metric"><span>Next action</span><span class="value" id="action">Wait</span></div>
+
+      <div class="lead" id="leadCard">
+        <div class="small">LEAD SUMMARY</div>
+        <p><b>Customer:</b> +49 170 555 0198</p>
+        <p><b>Issue:</b> <span id="issue">—</span></p>
+        <p><b>Postcode:</b> <span id="postcode">—</span></p>
+        <p><b>Urgency:</b> <span id="urgency">—</span></p>
+        <p><b>Preferred callback:</b> <span id="time">—</span></p>
+        <div><span class="tag">Heating</span><span class="tag">Recovered lead</span><span class="tag" id="tag">Awaiting qualification</span></div>
+      </div>
+
+      <div class="flow">
+        <div>📞 Call</div><div>💬 SMS</div><div>🤖 AI triage</div><div>📅 Callback</div><div>🔔 Owner</div>
+      </div>
+      <div class="note">Pilot principle: the AI does not diagnose gas/electrical danger. Emergency/safety triggers escalate to the business or emergency guidance.</div>
+    </div>
+  </div>
+<p style="color:#94a3b8;font-size:12px;margin-top:22px">Illustrative, scripted demo only. No live messages are sent, no AI model or calendar is connected, and no customer data is collected.</p></div>
+<script>
+let s=0;
+const bodies=[
+`<div class="caller"><div class="icon">📞</div><h3>Incoming call</h3><div>+49 170 555 0198</div><div class="small">No answer after 25 seconds</div></div><div class="msg in">Call marked as missed. Lead created automatically.</div>`,
+`<div class="caller"><div class="icon">📵</div><h3>Missed call</h3><div class="small">Fallback IVR asks permission to continue by SMS</div></div><div class="msg out">Press 1 if you'd like to continue your enquiry by text.</div><div class="msg in">1</div><div class="msg out">Thanks — we can help collect the details for the heating team.</div>`,
+`<div class="msg out">What do you need help with?</div><div class="msg in">My heating stopped working.</div><div class="msg out">Is there any smell of gas, CO alarm, fire or immediate danger?</div><div class="msg in">No.</div><div class="msg out">What postcode is the property in?</div><div class="msg in">42929</div>`,
+`<div class="msg out">Thanks. How urgent is the issue?</div><div class="msg in">No heating at all, but no danger.</div><div class="msg out">When would you prefer a callback?</div><div class="msg in">Tomorrow morning.</div><div class="msg out">Got it. I’ll pass this to the team as a priority heating enquiry.</div>`,
+`<div class="msg out">✅ Your request has been sent to the HVAC team.</div><div class="caller"><div class="icon">🔔</div><h3>Owner notification</h3><div class="small">Recovered missed call • qualified</div></div><div class="msg in"><b>Heating failure</b><br>42929<br>No immediate danger<br>Callback: tomorrow morning</div>`
+];
+function draw(){
+ document.getElementById("phoneBody").innerHTML=bodies[s];
+ [...document.querySelectorAll(".step")].forEach((x,i)=>x.classList.toggle("active",i===s));
+ const states=[
+  ["Pending","0%","Wait","—","—","—","—","Awaiting qualification"],
+  ["Yes","10%","Qualify","—","—","—","—","Consent captured"],
+  ["Yes","65%","Continue","Heating stopped","42929","No immediate danger","—","In qualification"],
+  ["Yes","100%","Notify owner","Heating stopped","42929","High","Tomorrow morning","Qualified"],
+  ["Yes","100%","Owner callback","Heating stopped","42929","High","Tomorrow morning","Owner notified"]
+ ][s];
+ document.getElementById("consent").textContent=states[0];
+ document.getElementById("qual").textContent=states[1];
+ document.getElementById("action").textContent=states[2];
+ document.getElementById("issue").textContent=states[3];
+ document.getElementById("postcode").textContent=states[4];
+ document.getElementById("urgency").textContent=states[5];
+ document.getElementById("time").textContent=states[6];
+ document.getElementById("tag").textContent=states[7];
+}
+function next(){if(s<4){s++;draw()}}
+function prev(){if(s>0){s--;draw()}}
+draw();
+</script>
+</body></html>

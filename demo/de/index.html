@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ResponseHarbor — Demo (Deutsch)</title>
+<style>
+body{font-family:Inter,system-ui,sans-serif;background:#0b1220;color:#f8fafc;margin:0}
+.wrap{max-width:980px;margin:auto;padding:32px 18px}
+.card{background:#111b2e;border:1px solid #26364f;border-radius:18px;padding:22px;margin-bottom:16px}
+h1{margin:0 0 8px}.muted{color:#94a3b8}.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:22px 0}
+.step{background:#142033;border:1px solid #2a3a55;border-radius:12px;padding:13px;text-align:center;font-size:14px}
+.step.active{background:#4caaff;color:#062218;font-weight:800}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.msg{padding:11px 13px;border-radius:14px;margin:9px 0;max-width:85%;line-height:1.4}
+.out{background:#1355a8;margin-left:auto}.in{background:#1e293b}.lead{background:#0d1726;border:1px solid #2b425f;border-radius:14px;padding:15px}
+button{padding:11px 16px;border:0;border-radius:10px;font-weight:700;cursor:pointer;margin-right:8px}
+.primary{background:#4caaff;color:#062218}.secondary{background:#23324a;color:white}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.steps{grid-template-columns:1fr}}
+</style></head><body><div class="wrap"><p style="font-size:13px"><a href="../../" style="color:#93c5fd;text-decoration:none">← ResponseHarbor</a> &nbsp; · &nbsp; <a href="../" style="color:#93c5fd;text-decoration:none">English</a></p>
+<h1>ResponseHarbor — 2-Minuten-Demo</h1>
+<div class="muted">Verpasster Anruf → Zustimmung → SMS → Qualifizierung → Rückruf / Termin → fertige Anfrage</div>
+<div class="steps" id="steps">
+<div class="step active">1 Verpasster Anruf</div><div class="step">2 Zustimmung</div><div class="step">3 Qualifizierung</div><div class="step">4 Rückruf</div><div class="step">5 Übergabe</div>
+</div>
+<div class="grid">
+<div class="card"><h3>Kundenseite</h3><div id="chat"></div><button class="secondary" onclick="back()">Zurück</button><button class="primary" onclick="next()">Nächster Schritt</button></div>
+<div class="card"><h3>Was der SHK-Betrieb erhält</h3><div class="lead" id="lead"></div></div>
+</div></div><p style="color:#94a3b8;font-size:12px">Nur eine interaktive Simulation. Es werden keine SMS versendet, keine echten KI- oder Kalendersysteme verwendet und keine Kundendaten erhoben.</p>
+<script>
+let s=0;
+const chats=[
+'<div class="msg in">📞 Anruf von +49 170 5550198</div><div class="msg in">Nach 25 Sekunden nicht angenommen.</div>',
+'<div class="msg out">Wir konnten Ihren Anruf gerade nicht annehmen. Drücken Sie 1, wenn wir Ihre Anfrage per SMS weiterführen dürfen.</div><div class="msg in">1</div>',
+'<div class="msg out">Worum geht es?</div><div class="msg in">Unsere Heizung ist ausgefallen.</div><div class="msg out">Gibt es Gasgeruch, CO-Alarm, Feuer oder eine akute Gefahr?</div><div class="msg in">Nein.</div><div class="msg out">Wie lautet Ihre PLZ?</div><div class="msg in">42929</div>',
+'<div class="msg out">Wann sollen wir Sie am besten zurückrufen?</div><div class="msg in">Morgen Vormittag.</div><div class="msg out">Danke. Ich gebe die Anfrage jetzt strukturiert an den Betrieb weiter.</div>',
+'<div class="msg out">✅ Anfrage übermittelt.</div>'
+];
+const leads=[
+'<b>Lead erstellt</b><p>Status: Verpasster Anruf</p><p>Qualifizierung: 0%</p>',
+'<b>Einwilligung erfasst</b><p>Kanal: SMS</p><p>Qualifizierung: 10%</p>',
+'<b>Heizungsproblem</b><p>PLZ: 42929</p><p>Akute Gefahr: Nein</p><p>Qualifizierung: 70%</p>',
+'<b>Qualifizierte Anfrage</b><p>Problem: Heizung ausgefallen</p><p>PLZ: 42929</p><p>Rückruf: morgen Vormittag</p>',
+'<b>🔔 Fertig für den Betrieb</b><p>Quelle: zurückgewonnener verpasster Anruf</p><p>Priorität: hoch</p><p>Nächste Aktion: Kunde zurückrufen</p>'
+];
+function draw(){document.getElementById('chat').innerHTML=chats[s];document.getElementById('lead').innerHTML=leads[s];document.querySelectorAll('.step').forEach((x,i)=>x.classList.toggle('active',i===s));}
+function next(){if(s<4){s++;draw()}} function back(){if(s>0){s--;draw()}} draw();
+</script></body></html>
